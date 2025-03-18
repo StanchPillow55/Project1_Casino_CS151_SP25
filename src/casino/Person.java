@@ -18,6 +18,6 @@ public class Person {
 	}
 
 	public void setChips(int chips) {
-		this.chips = chips;
+		this.chips = chips; //
 	}
 }
