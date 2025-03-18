@@ -2,7 +2,7 @@ package StartGames;
 
 public class Roulette {
     private int pot; // based on total bet 
-    private int[] numbers; // roulette numbers are 0 -36 
+    private int[] numbers; // roulette numbers are 0-36 
     private boolean colors; // red or black 
 
     public void play () { // create playRoulette object
@@ -22,7 +22,7 @@ public class Roulette {
         this.pot = pot; 
     }
     
-    // numbers 
+    // numbers , use setters and getter 
     public int[] getNumbers () {
         return numbers; 
     }
@@ -31,7 +31,7 @@ public class Roulette {
         this.numbers = numbers; 
     }
     
-    // colors
+    // colors , use setters and getters 
     public boolean getColors() {
         return colors; 
     }
