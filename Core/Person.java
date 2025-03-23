@@ -23,11 +23,47 @@ public class Person extends Enforcer{
         for(int i = 0; i < chips.length; i++){
             chips[i] = 0;
         }
-
-
     }
-    public void chooseGame(String s){
-        //implement using try/catch and Class.forName(className);
+
+    public void chooseGame(String gameName) {
+        try {
+            Game selectedGame = (Game) Class.forName("StartGames." + gameName).getDeclaredConstructor().newInstance();
+            selectedGame.play();
+        } catch (Exception e) {
+            System.out.println("Invalid game selection. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean checkExit(String input) {
+        if (input.toUpperCase().equals("EXIT")) {
+            System.out.println("Exiting the casino... Goodbye!");
+            System.exit(0);
+        }
+        return false;
+    }
+
+    @Override
+    public void countInstances() throws InstanceOverload {
+        if (getInstanceCount() > 100) {
+            throw new InstanceOverload("Too many game instances. Terminating...");
+        }
+    }
+
+    @Override
+    public void checkNetEarnings() {
+        if (getNetEarnings() > 1000000) {
+            System.out.println("Net earnings exceed the limit. Suspected cheating detected. Exiting...");
+            System.exit(0);
+        }
+    }
+
+    @Override
+    public void checkInebriation() {
+        if (getInebriation() > 5) {
+            System.out.println("You are too inebriated to continue. Exiting the casino...");
+            System.exit(0);
+        }
     }
 
     public String getName() {

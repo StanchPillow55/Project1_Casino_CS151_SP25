@@ -58,6 +58,52 @@ public class Slots extends Enforcer implements Game {
         }
     }
 
+    //alternate betting to support using chips isntead of dollars
+    public void playWithBetting() {
+        System.out.print("Enter your bet in dollars or chips: ");
+        int betAmount = new java.util.Scanner(System.in).nextInt();
+
+        try {
+            if (betAmount <= player.getMoney()) {
+                player.setMoney(player.getMoney() - betAmount);
+            } else if (betAmount <= calculateChipValue(player.getChips())) {
+                deductChips(betAmount);
+            } else {
+                throw new InsufficientFunds("Insufficient funds or chips.");
+            }
+
+            playSlots slotsGame = new playSlots(betAmount, player.getMoney());
+            slotsGame.play();
+        } catch (InsufficientFunds e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+private int calculateChipValue(int[] chips) {
+    int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+    int totalValue = 0;
+    for (int i = 0; i < chips.length; i++) {
+        totalValue += chips[i] * chipValues[i];
+    }
+    return totalValue;
+}
+
+private void deductChips(int amount) {
+    int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+    int[] chips = player.getChips();
+    int remainingAmount = amount;
+
+    for (int i = chips.length - 1; i >= 0 && remainingAmount > 0; i--) {
+        int chipsNeeded = remainingAmount / chipValues[i];
+        if (chips[i] >= chipsNeeded) {
+            chips[i] -= chipsNeeded;
+            remainingAmount -= chipsNeeded * chipValues[i];
+        }
+    }
+    player.setChips(chips);
+}
+
     @Override
     public String toString(){
         return result;  

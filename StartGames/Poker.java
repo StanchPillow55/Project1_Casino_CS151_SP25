@@ -43,18 +43,49 @@ public class Poker extends Enforcer implements Game {
 
     // Start the game by creating a playPoker object
     public void play(String[] d, String[][] ds) {
-        playPoker pokerGame = new playPoker(d, ds);
-        pokerGame.playHand(); 
+        System.out.print("Enter your bet in dollars or chips: ");
+        int betAmount = new java.util.Scanner(System.in).nextInt();
+
+        try {
+            if (betAmount <= player.getMoney()) {
+                player.setMoney(player.getMoney() - betAmount);
+            } else if (betAmount <= calculateChipValue(player.getChips())) {
+                deductChips(betAmount);
+            } else {
+                throw new InsufficientFunds("Insufficient funds or chips.");
+            }
+
+            pot += betAmount;
+            System.out.println("Starting Poker with pot: $" + pot);
+            playPoker pokerGame = new playPoker(d, ds);
+            pokerGame.playHand();
+        } catch (InsufficientFunds e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-   
-    public void bet(int amount) throws InsufficientFunds {
-        if (player.getMoney() < amount) {
-            throw new InsufficientFunds("Cannot bet that much!");
+    private int calculateChipValue(int[] chips) {
+        int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+        int totalValue = 0;
+        for (int i = 0; i < chips.length; i++) {
+            totalValue += chips[i] * chipValues[i];
         }
-        // Deduct the bet amount from the player's balance and add to the pot
-        player.setMoney(player.getMoney() - amount);
-        pot += amount;
+        return totalValue;
+    }
+
+    private void deductChips(int amount) {
+        int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+        int[] chips = player.getChips();
+        int remainingAmount = amount;
+
+        for (int i = chips.length - 1; i >= 0 && remainingAmount > 0; i--) {
+            int chipsNeeded = remainingAmount / chipValues[i];
+            if (chips[i] >= chipsNeeded) {
+                chips[i] -= chipsNeeded;
+                remainingAmount -= chipsNeeded * chipValues[i];
+            }
+        }
+        player.setChips(chips);
     }
 
     // Getter and setter methods for Deck and Pot

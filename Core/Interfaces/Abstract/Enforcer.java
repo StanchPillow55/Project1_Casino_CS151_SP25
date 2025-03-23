@@ -1,6 +1,41 @@
-public abstract class Enforcer { //enforces functionality, cannot exceed 1 million net earnings, cannot exceed 5 drinks, must terminate the program if Scanner input.toUpperCase() is "EXIT"
-    public boolean checkExit(); //for any given input, if input.toUpperCase().equals("EXIT"), terminate the program
-    public void countInstances(); //check if # instances for any given class exceeds 100, if so, terminate (may change to boolean, throw exception)
-    public void checkNetEarnings(); //check if net earnings exceed 1 million, if so, terminate
-    public void checkInebriation(); //check if inebriation exceeds 5 drinks 
+package Core;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner; // Added missing import
+
+public abstract class Enforcer {
+
+    private static final Map<String, Integer> instanceCounts = new HashMap<>();
+
+    public Enforcer() throws InstanceOverload {
+        String className = this.getClass().getSimpleName();
+        instanceCounts.put(className, instanceCounts.getOrDefault(className, 0) + 1);
+        if (instanceCounts.get(className) > 100) {
+            throw new InstanceOverload("Too many instances of " + className + " created. Terminating program.");
+        }
+    }
+
+    public void checkNetEarnings(Person player) {
+        if (player.getNetEarnings() > 1000000) {
+            System.out.println("You cheated!");
+            System.exit(0);
+        }
+    }
+
+    public void checkInebriation(Person player) {
+        if (player.getInebriation() > 5) {
+            System.out.println("You are too inebriated to continue. Exiting the casino...");
+            System.exit(0);
+        }
+    }
+
+    public boolean checkExit(String input, Scanner scanner) {
+        if (input.toUpperCase().equals("EXIT")) {
+            System.out.println("Exiting the casino... Goodbye!");
+            scanner.close();
+            System.exit(0);
+        }
+        return false;
+    }
 }

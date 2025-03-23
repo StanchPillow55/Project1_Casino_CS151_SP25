@@ -7,7 +7,7 @@ public class BlackJack extends Enforcer implements Game {
     private String[] Deck = new String[52];
     private String[][] Decks = new String[6][52];
     private final String[] Faces = {"J", "Q", "K", "A"};
-    private int initialBet; // Correctly declared
+    private int initialBet; 
 
     public BlackJack(Person p) {
         player = p;
@@ -42,25 +42,23 @@ public class BlackJack extends Enforcer implements Game {
         }
     }
 
-    // Start the game by constructing a playBlackJack class (separated because code was cumbersome)
+    // Implement betting system
     public void play(int x) {
-        initialBet = x;
         try {
-            bet(initialBet);
+            if (betAmount <= player.getMoney()) {
+                player.setMoney(player.getMoney() - x);
+            } else if (x <= calculateChipValue(player.getChips())) {
+                deductChips(x);
+            } else {
+                throw new InsufficientFunds("Insufficient funds or chips.");
+            }
+
+            // Proceed with game logic
+            System.out.println("Starting BlackJack with bet: $" + x);
+            playBlackJack tmp = new playBlackJack();
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());
-            return;
         }
-        playBlackJack tmp = new playBlackJack();
-    }
-
-    // Implement betting system
-    public void bet(int x) throws InsufficientFunds {
-        if (player.getMoney() < x) {
-            throw new InsufficientFunds("Cannot bet that much!");
-        }
-        // Deduct bet amount from player's balance
-        player.setMoney(player.getMoney() - x);
     }
 
     // Deal two random cards from the deck
@@ -79,6 +77,30 @@ public class BlackJack extends Enforcer implements Game {
             Decks[randDeck][randCard] = null; // ensure that card in that deck cannot be chosen again
         }
         return dealtCards;
+    }
+
+    private int calculateChipValue(int[] chips) {
+        int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+        int totalValue = 0;
+        for (int i = 0; i < chips.length; i++) {
+            totalValue += chips[i] * chipValues[i];
+        }
+        return totalValue;
+    }
+
+    private void deductChips(int amount) {
+        int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+        int[] chips = player.getChips();
+        int remainingAmount = amount;
+
+        for (int i = chips.length - 1; i >= 0 && remainingAmount > 0; i--) {
+            int chipsNeeded = remainingAmount / chipValues[i];
+            if (chips[i] >= chipsNeeded) {
+                chips[i] -= chipsNeeded;
+                remainingAmount -= chipsNeeded * chipValues[i];
+            }
+        }
+        player.setChips(chips);
     }
 
     // Getter and setter methods
