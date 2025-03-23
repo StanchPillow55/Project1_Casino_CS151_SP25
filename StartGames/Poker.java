@@ -1,34 +1,77 @@
 package StartGames;
 
-public class Poker {
-    String[] deck;
-    String[][] decks; //An array which contains arrays of deck, poker tables often have multiple decks
-    int pot; //update with bets
-    int sidePot; //create a main and side pot dependent on if someone is all in, whilst others continue to bet
-    //check would be if person whos all in wins sidepot, sidePot is only a multiple of how many people bet to that point 
+import java.util.*;
 
-    public void play(){//create a playPoker object
+public class Poker extends Enforcer implements Game {
+    private Person player;
+    private String[] Deck = new String[52];
+    private String[][] Decks = new String[6][52];
+    private final String[] Faces = {"J", "Q", "K", "A"};
+    private int pot;  // Pot to hold the total bet
 
+    public Poker(Person p) {
+        player = p;
+        initializeDeck();
     }
 
-    public void bet(){ //initial bet / amount brought to the table for a session (if refill, reset game)
+    private void initializeDeck() {
+        int num = 2;
+        for (int i = 0; i <= 36; i++) {
+            Deck[i] = "" + num + "D";
+            Deck[i + 1] = "" + num + "C";
+            Deck[i + 2] = "" + num + "H";
+            Deck[i + 3] = "" + num + "S";
+            i += 3;
+            num++;
+        }
 
+        int faceCt = 0;
+        for (int i = 37; i <= 52; i++) {
+            Deck[i] = "" + Faces[faceCt] + "D";
+            Deck[i + 1] = "" + Faces[faceCt] + "C";
+            Deck[i + 2] = "" + Faces[faceCt] + "H";
+            Deck[i + 3] = "" + Faces[faceCt] + "S";
+            i += 3;
+            faceCt++; // Fill with face cards
+        }
+
+        // Fill Decks for multiple decks
+        for (int i = 0; i < 6; i++) {
+            Decks[i] = Deck;
+        }
     }
 
+    // Start the game by creating a playPoker object
+    public void play(String[] d, String[][] ds) {
+        playPoker pokerGame = new playPoker(d, ds);
+        pokerGame.playHand(); 
+    }
+
+   
+    public void bet(int amount) throws InsufficientFunds {
+        if (player.getMoney() < amount) {
+            throw new InsufficientFunds("Cannot bet that much!");
+        }
+        // Deduct the bet amount from the player's balance and add to the pot
+        player.setMoney(player.getMoney() - amount);
+        pot += amount;
+    }
+
+    // Getter and setter methods for Deck and Pot
     public String[] getDeck() {
-        return deck;
+        return Deck;
     }
 
     public void setDeck(String[] deck) {
-        this.deck = deck;
+        this.Deck = deck;
     }
 
     public String[][] getDecks() {
-        return decks;
+        return Decks;
     }
 
     public void setDecks(String[][] decks) {
-        this.decks = decks;
+        this.Decks = decks;
     }
 
     public int getPot() {
@@ -38,13 +81,4 @@ public class Poker {
     public void setPot(int pot) {
         this.pot = pot;
     }
-
-    public int getSidePot() {
-        return sidePot;
-    }
-
-    public void setSidePot(int sidePot) {
-        this.sidePot = sidePot;
-    }
-
 }

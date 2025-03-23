@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Random;
 
-public class Slots {
+public class Slots extends Enforcer implements Game {
     protected HashMap<String, Double> winningCombos; // hashmap of winning combos 
     private Random random;
     private char[] winningSymbols;
@@ -36,12 +36,13 @@ public class Slots {
         }
     }
 
-    public String play() {
+    public void play(){
         StringBuilder comboString = new StringBuilder();
         for (int i = 0; i < 3; i++) {
             comboString.append(randomSymbol());
         }
-        return comboString.toString();
+        result = comboString.toString();
+        System.out.println(result);
     }
 
     public double bet(double betAmount) {
@@ -55,6 +56,11 @@ public class Slots {
             System.out.println("You lose.");
             return 0;
         }
+    }
+
+    @Override
+    public String toString(){
+        return result;  
     }
 
     public HashMap<String, Double> getWinningCombos() {
