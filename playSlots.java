@@ -9,14 +9,15 @@ public class playSlots extends Slots {
     }
 
     @Override
-    public String play() {
+    public void play() {
         double payout = bet(betAmount);
         accountBalance += payout - betAmount;
-        return accountBalance;
+        System.out.println("Your Account Balance is: " + accountBalance);
     }
 
     public String spin() {
-        return play();
+        play();
+        return toString();
     }
 
     public double bet() {
