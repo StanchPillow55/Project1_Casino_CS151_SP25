@@ -1,6 +1,6 @@
-package Core;
+package UI;
 
-import StartGames.*;
+import Core.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -67,7 +67,7 @@ public class CasinoUI {
         }
     }
 
-    private void playBlackJack() {
+    private void playBlackJack() throws InstanceOverload {
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = getValidBet();
         BlackJack blackJack = new BlackJack(player);
@@ -75,19 +75,19 @@ public class CasinoUI {
         blackJack.play(betAmount);
     }
 
-    private void playPoker() {
+    private void playPoker() throws InstanceOverload{
         Poker poker = new Poker(player);
         player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
         poker.play(poker.getDeck(), poker.getDecks());
     }
 
-    private void playRoulette() {
+    private void playRoulette() throws InstanceOverload{
         Roulette roulette = new Roulette(player);
         player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
         roulette.play();
     }
 
-    private void playSlots() {
+    private void playSlots() throws InstanceOverload{
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = getValidBet();
         Slots slots = new Slots(player);
@@ -95,7 +95,7 @@ public class CasinoUI {
         slots.playWithBetting();
     }
 
-    private void playSportsBetting() {
+    private void playSportsBetting() throws InstanceOverload{
         SportsBetting sportsBetting = new SportsBetting(player);
         player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
         sportsBetting.play();
@@ -147,7 +147,7 @@ public class CasinoUI {
         return betAmount;
     }
 
-    public static void main(String[] args) {
+    public static void main (String[] args){
         Scanner scanner = new Scanner(System.in);
         Person player = new Person();
         CasinoUI casinoUI = new CasinoUI(player, scanner);
