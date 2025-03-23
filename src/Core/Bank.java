@@ -1,3 +1,5 @@
+package Core;
+
 public class Bank {
     Person atCounter;
     private int[] chipsDupe; //copy of Person array, used to modify person array

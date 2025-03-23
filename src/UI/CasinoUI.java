@@ -1,6 +1,6 @@
 package UI;
 
-import Core.*;
+import java.Core.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -147,7 +147,7 @@ public class CasinoUI {
         return betAmount;
     }
 
-    public static void main (String[] args){
+    public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
         Person player = new Person();
         CasinoUI casinoUI = new CasinoUI(player, scanner);
