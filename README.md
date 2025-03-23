@@ -15,3 +15,6 @@ Sport Betting - Odds are predetermined and according to the likelihood of the te
 Navigation is done through our UI which reads numbers to initialize an appropriate object and you also play through this very same UI which will prompt you for bets and output important information such as your cards and winnning numbers / combos.
 
 Do not get too drunk, enjoy our games and try to win as much as you can (but not too much) !
+
+
+[CS151-06 _ Project1 - Casino.pdf](https://github.com/user-attachments/files/19407492/CS151-06._.Project1.-.Casino.pdf)
