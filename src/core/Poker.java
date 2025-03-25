@@ -8,9 +8,23 @@ public class Poker extends Enforcer implements Game {
     private String[][] Decks = new String[6][52];
     private final String[] Faces = {"J", "Q", "K", "A"};
     private int pot;  // Pot to hold the total bet
+    private int initialBet;
+    private Scanner scnr;
 
-    public Poker(Person p) {
+    public Poker() throws InstanceOverload{
+        initializeDeck();
+    }
+
+    public Poker(Person p, Scanner scanner) throws InputMismatchException, InsufficientFunds, InstanceOverload{
         player = p;
+        scnr = scanner;
+        try{
+            System.out.print("Enter your initial bet (int): ");
+            initialBet = scanner.nextInt();
+        }
+        catch(InputMismatchException e){
+            throw new InputMismatchException("Enter a valid integer!");
+        }
         initializeDeck();
     }
 
@@ -26,18 +40,18 @@ public class Poker extends Enforcer implements Game {
         }
 
         int faceCt = 0;
-        for (int i = 37; i <= 52; i++) {
+        for (int i = 37; i < 52; i++) { //fills remaining with face cards
             Deck[i] = "" + Faces[faceCt] + "D";
             Deck[i + 1] = "" + Faces[faceCt] + "C";
             Deck[i + 2] = "" + Faces[faceCt] + "H";
             Deck[i + 3] = "" + Faces[faceCt] + "S";
             i += 3;
-            faceCt++; // Fill with face cards
+            faceCt++; 
         }
 
         // Fill Decks for multiple decks
         for (int i = 0; i < 6; i++) {
-            Decks[i] = Deck;
+            Decks[i] = Arrays.copyOf(Deck, 52);
         }
     }
 
@@ -59,10 +73,12 @@ public class Poker extends Enforcer implements Game {
 
             pot += betAmount;
             System.out.println("Starting Poker with pot: $" + pot);
-            playPoker pokerGame = new playPoker(this.getDeck(), this.getDecks());
+            playPoker pokerGame = new playPoker();
             pokerGame.playHand();
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());
+        } catch (InstanceOverload i){
+            System.out.println(i.getMessage());
         }
     }
 
@@ -113,5 +129,29 @@ public class Poker extends Enforcer implements Game {
 
     public void setPot(int pot) {
         this.pot = pot;
+    }
+
+    public int getInitialBet() {
+        return initialBet;
+    }
+
+    public void setInitialBet(int x) {
+        initialBet = x;
+    }
+
+    public void setPlayer(Person p) {
+        player = p;
+    }
+
+    public Person getPlayer() {
+        return player;
+    }
+
+    public Scanner getScnr(){
+        return scnr;
+    }
+
+    public void setScnr(Scanner scanner){
+        scnr = scanner;
     }
 }

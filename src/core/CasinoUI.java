@@ -17,7 +17,7 @@ public class CasinoUI {
         this.scanner = scanner;
     }
 
-    public void start() {
+    public void start() throws InsufficientFunds, InstanceOverload, InputMismatchException{
         try {
             while (true) {
                 System.out.println("Welcome to the Casino! Choose a game or action:");
@@ -69,7 +69,7 @@ public class CasinoUI {
         }
     }
 
-    private void playBlackJack() throws InstanceOverload {
+    private void playBlackJack() throws InstanceOverload, InsufficientFunds, InputMismatchException {
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = getValidBet();
         BlackJack blackJack = new BlackJack(player, scanner);
@@ -77,28 +77,28 @@ public class CasinoUI {
         blackJack.play();
     }
 
-    private void playPoker() throws InstanceOverload{
+    private void playPoker() throws InstanceOverload, InsufficientFunds, InputMismatchException{
         Poker poker = new Poker(player, scanner);
         player.setInebriation(player.getInebriation() + 1); 
         poker.play();
     }
 
-    private void playRoulette() throws InstanceOverload{
-        Roulette roulette = new Roulette(player);
+    private void playRoulette() throws InstanceOverload, InsufficientFunds, InputMismatchException{
+        Roulette roulette = new Roulette(player, scanner);
         player.setInebriation(player.getInebriation() + 1); 
         roulette.play();
     }
 
-    private void playSlots() throws InstanceOverload{
+    private void playSlots() throws InstanceOverload, InsufficientFunds, InputMismatchException{
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = getValidBet();
-        Slots slots = new Slots(player);
+        Slots slots = new Slots(player, scanner);
         player.setInebriation(player.getInebriation() + 1); 
-        slots.playWithBetting();
+        slots.playWithBetting(scanner);
     }
 
-    private void playSportsBetting() throws InstanceOverload{
-        SportsBetting sportsBetting = new SportsBetting(player);
+    private void playSportsBetting() throws InstanceOverload, InsufficientFunds, InputMismatchException{
+        SportsBetting sportsBetting = new SportsBetting(player, scanner);
         player.setInebriation(player.getInebriation() + 1); 
         sportsBetting.play();
     }
@@ -149,10 +149,23 @@ public class CasinoUI {
         return betAmount;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws InsufficientFunds, InstanceOverload, InputMismatchException{
         Scanner scanner = new Scanner(System.in);
-        Person player = new Person("Name");
+        System.out.print("Enter your name: ");
+        String name = scanner.next(); 
+        Person player = new Person(name);
         CasinoUI casinoUI = new CasinoUI(player, scanner);
-        casinoUI.start();
+        try{
+            casinoUI.start();
+        }
+        catch(InsufficientFunds i){
+            throw new InsufficientFunds("Enter a valid bet");
+        }
+        catch(InstanceOverload o){
+            throw new InstanceOverload("Too many objects!");
+        }
+        catch(InputMismatchException m){
+            throw new InputMismatchException("Wrong input. Try again!");
+        }
     }
 }

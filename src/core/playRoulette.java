@@ -1,48 +1,78 @@
 package core;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.InputMismatchException;
 
-public class playRoulette extends Roulette {
+public class playRoulette {
     private int initialBet;
-    private Map<Integer, Integer> bets; // Stores number-to-bet mappings
+    private Map<Integer, Integer> bets; //stores bets
+    private Random random;
+    private Person player;
 
-    public playRoulette(int initialBet) {
+    public playRoulette(int initialBet, Person p) throws InstanceOverload {
         this.initialBet = initialBet;
-        this.bets = new HashMap<>();
-        setPot(initialBet);  // Initialize pot with the starting bet
+        this.player = p;
+        this.bets = new HashMap<Integer, Integer>();
+        this.random = new Random();
     }
 
-    // Implement betting system
-    @Override
-    public void bet(int number, int amount) throws new InsufficientFunds{
-        if (amount <= getPot()) {
-            bets.put(number, amount);
-            setPot(getPot() - amount);
-        } else {
-            throws new InsufficientFunds("Cannot place bet");
+    public void play(Scanner scanner) {
+        System.out.println("You have $" + initialBet + " to place bets.");
+
+        boolean betting = true;
+        while (betting && initialBet > 0) {
+            try {
+                System.out.print("Enter a number to bet on (0-36) or -1 to stop betting: ");
+                int number = scanner.nextInt();
+
+                if (number == -1) {
+                    betting = false;
+                    break;
+                }
+
+                if (number < 0 || number > 36) {
+                    System.out.println("Invalid number! Please pick a number between 0 and 36.");
+                    continue;
+                }
+
+                System.out.print("Enter the amount to bet on " + number + ": ");
+                int betAmount = scanner.nextInt();
+
+                if (betAmount > initialBet) {
+                    throw new InsufficientFunds("You don't have enough money for that bet.");
+                }
+
+                bets.put(number, bets.getOrDefault(number, 0) + betAmount);
+                initialBet -= betAmount;
+
+                System.out.println("Bet of $" + betAmount + " placed on number " + number);
+                System.out.println("Remaining money to bet: $" + initialBet);
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+            } catch (InsufficientFunds e) {
+                System.out.println(e.getMessage());
+            }
         }
-    }
 
-    // Play logic with roulette spin
-    @Override
-    public void play() {
-        Random rand = new Random();
-        int winningNumber = rand.nextInt(37); // Roulette has numbers 0-36
-        System.out.println("Winning number: " + winningNumber);
+        // Spin the roulette wheel
+        int winningNumber = random.nextInt(37); // 0-36 inclusive
+        System.out.println("Roulette spun... Winning number is: " + winningNumber);
 
-        // Check for wins
+        // Calculate winnings
+        int winnings = 0;
         if (bets.containsKey(winningNumber)) {
-            int winnings = bets.get(winningNumber) * 36; // Standard roulette payout
-            setPot(getPot() + winnings);
-            System.out.println("You won! New pot: " + getPot());
+            winnings = bets.get(winningNumber) * 2;
+            System.out.println("Congratulations! You won $" + winnings);
         } else {
-            System.out.println("No wins this round. Remaining pot: " + getPot());
+            System.out.println("Sorry! You lost all your bets.");
         }
 
-        // Clear bets for the next round
-        bets.clear();
+        // Return winnings to player's money pool
+        player.setMoney(player.getMoney() + winnings);
+        System.out.println("Your new balance is: $" + player.getMoney());
     }
 }

@@ -1,10 +1,10 @@
 package core;
 public class playSlots extends Slots {
     private int betAmount;
-    private double accountBalance;
+    private int accountBalance;
 
-    public playSlots(int betAmount, double accountBalance) {
-        super();
+    public playSlots(int betAmount, int accountBalance) throws InstanceOverload{
+        super(betAmount, accountBalance);
         this.betAmount = betAmount;
         this.accountBalance = accountBalance;
     }
@@ -33,7 +33,7 @@ public class playSlots extends Slots {
         return accountBalance;
     }
 
-    public void setAccountBalance(double accountBalance) {
+    public void setAccountBalance(int accountBalance) {
         this.accountBalance = accountBalance;
     }
 

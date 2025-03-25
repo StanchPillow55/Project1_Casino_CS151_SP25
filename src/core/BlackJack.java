@@ -7,39 +7,50 @@ public class BlackJack extends Enforcer implements Game {
     private String[] Deck = new String[52];
     private String[][] Decks = new String[6][52];
     private final String[] Faces = {"J", "Q", "K", "A"};
-    private int initialBet; 
+    private int initialBet;
 
-    public BlackJack(Person p, Scanner scanner) {
+    public BlackJack() throws InstanceOverload{
+        System.out.println("Starting your game of BlackJack...");
+    }
+
+    public BlackJack(Person p, Scanner scanner) throws InputMismatchException, InsufficientFunds, InstanceOverload {
         player = p;
-        initialBet = scanner.next("Enter your initial bet: ");
+        System.out.print("Enter your initial bet (int): ");
+        try {
+            initialBet = scanner.nextInt();
+            if (initialBet <= 0) {
+                throw new InsufficientFunds("Enter a valid positive bet!");
+            }
+        } catch (InputMismatchException e) {
+            scanner.nextLine(); // Clear invalid input
+            throw new InputMismatchException("Enter a valid integer!");
+        }
         initializeDeck();
     }
 
     // Initialize the Deck with cards
     private void initializeDeck() {
         int num = 2;
-        for (int i = 0; i <= 36; i++) {
+        for (int i = 0; i < 36; i += 4) {
             Deck[i] = "" + num + "D";
             Deck[i + 1] = "" + num + "C";
             Deck[i + 2] = "" + num + "H";
             Deck[i + 3] = "" + num + "S";
-            i += 3;
             num++;
         }
 
         int faceCt = 0;
-        for (int i = 37; i <= 52; i++) { //fills remaining with face cards
-            Deck[i] = "" + Faces[faceCt] + "D";
-            Deck[i + 1] = "" + Faces[faceCt] + "C";
-            Deck[i + 2] = "" + Faces[faceCt] + "H";
-            Deck[i + 3] = "" + Faces[faceCt] + "S";
-            i += 3;
+        for (int i = 36; i < 52; i += 4) {
+            Deck[i] = Faces[faceCt] + "D";
+            Deck[i + 1] = Faces[faceCt] + "C";
+            Deck[i + 2] = Faces[faceCt] + "H";
+            Deck[i + 3] = Faces[faceCt] + "S";
             faceCt++; 
         }
 
-        // Fill Decks for multiple decks
+        // Fill Decks for multiple decks with unique copies
         for (int i = 0; i < 6; i++) {
-            Decks[i] = Deck;
+            Decks[i] = Arrays.copyOf(Deck, Deck.length);
         }
     }
 
@@ -54,11 +65,12 @@ public class BlackJack extends Enforcer implements Game {
                 throw new InsufficientFunds("Insufficient funds or chips.");
             }
 
-            // Proceed with game logic
             System.out.println("Starting BlackJack with bet: $" + initialBet);
             playBlackJack tmp = new playBlackJack();
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());
+        } catch (InstanceOverload i){
+            System.out.println(i.getMessage());
         }
     }
 
@@ -66,16 +78,17 @@ public class BlackJack extends Enforcer implements Game {
     public String[] dealCards() {
         Random rand = new Random();
         String[] dealtCards = new String[2];
-        for (int i = 0; i < 2; i++) { // prevent NullPointerException
-            int randCard = rand.nextInt(Deck.length); // pick random card
-            int randDeck = rand.nextInt(6); // choose random deck (0-5)
-            while (Decks[randDeck][randCard] == null) {
-                randCard = rand.nextInt(Deck.length); // pick random card
-                randDeck = rand.nextInt(6); // choose random deck
-            }
+        for (int i = 0; i < 2; i++) {
+            int randCard;
+            int randDeck;
 
-            dealtCards[i] = Decks[randDeck][randCard]; // pick prior generated card from random Deck in Decks
-            Decks[randDeck][randCard] = null; // ensure that card in that deck cannot be chosen again
+            do {
+                randCard = rand.nextInt(Deck.length); 
+                randDeck = rand.nextInt(6); 
+            } while (Decks[randDeck][randCard] == null); 
+
+            dealtCards[i] = Decks[randDeck][randCard]; 
+            Decks[randDeck][randCard] = null; // Prevent reuse
         }
         return dealtCards;
     }

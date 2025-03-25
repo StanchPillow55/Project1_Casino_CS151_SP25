@@ -3,7 +3,7 @@ package core;
 
 import java.util.*;
 
-public class playPoker {
+public class playPoker extends Poker {
     private String[] deck;
     private String[][] decks;
     private ArrayList<String> playerHand;
@@ -13,16 +13,16 @@ public class playPoker {
     private Scanner scanner = new Scanner(System.in);
 
     // Constructor for playPoker
-    public playPoker(String[] d, String[][] ds) {
-        deck = d;
-        decks = ds;
-        playerHand = new ArrayList<>();
-        dealerHand = new ArrayList<>();
-        currentBet = 0; // Initial bet is zero
+    public playPoker() throws InstanceOverload{
+        deck = super.getDeck();
+        decks = super.getDecks();
+        playerHand = new ArrayList<String>();
+        dealerHand = new ArrayList<String>();
+        currentBet = 0; 
     }
 
     // Play a single hand of poker
-    public void playHand() {
+    public void playHand() throws InstanceOverload, InsufficientFunds{
         // Ask the player for an initial bet
         System.out.println("Welcome to Poker! How much would you like to bet?");
         currentBet = getValidBet(); // Get a valid bet from the player
@@ -56,22 +56,31 @@ public class playPoker {
         String result = compareHands(playerHandRank, dealerHandRank);
         System.out.println("Result: " + result);
 
-        // Handle pot distribution based on the winner
-        Poker pokerGame = new Poker(null); // Use a null player for testing purposes (change later)
-        int pot = pokerGame.getPot(); // Get the pot
+        try{
+            Poker pokerGame = new Poker(super.getPlayer(), super.getScnr());
+            int pot = pokerGame.getPot(); // Get the pot
 
-        if (result.equals("Player wins")) {
+            if (result.equals("Player wins")) {
             System.out.println("You win! The pot had: $" + pot);
             pokerGame.getPlayer().setMoney(pokerGame.getPlayer().getMoney() + pot);
-        } else if (result.equals("Dealer wins")) {
+            } else if (result.equals("Dealer wins")) {
             System.out.println("Dealer wins. All money lost.");
-        } else {
+            } else {
             System.out.println("It's a tie! No money lost.");
             pokerGame.getPlayer().setMoney(pokerGame.getPlayer().getMoney() + pot / 2);
-        }
+            }
 
-        // Reset pot
-        pokerGame.setPot(0);
+            pokerGame.setPot(0);
+        }
+        catch(InsufficientFunds i){
+            throw new InsufficientFunds("Invalid Bet.");
+        }
+        catch(InstanceOverload o){
+            throw new InstanceOverload("Too many objects!!");
+        }
+        finally{
+            System.out.println("Game over!");
+        }
     }
 
     private void dealCards(ArrayList<String> hand) {
@@ -113,8 +122,8 @@ public class playPoker {
 
         boolean isStraight = isStraight(cardValues);
 
-        int pairs = 0
-        int threeOfAKind = 0
+        int pairs = 0;
+        int threeOfAKind = 0;
         int fourOfAKind = 0;
         for (int count : valueCount.values()) {
             if (count == 4) {
@@ -126,7 +135,6 @@ public class playPoker {
             }
         }
 
-        if(isFlush && isStraight && )
         if (isFlush && isStraight) {
             return "Straight Flush";
         } else if (fourOfAKind == 1) {

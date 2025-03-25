@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public abstract class Enforcer {
 
-    public static final Map<String, Integer> instanceCounts = new HashMap<String, Integer>();
+    public static Map<String, Integer> instanceCounts = new HashMap<String, Integer>();
 
     public Enforcer() throws InstanceOverload {
         String className = this.getClass().getSimpleName();
@@ -37,6 +37,4 @@ public abstract class Enforcer {
         }
         return false;
     }
-
-    public abstract void
 }

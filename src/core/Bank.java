@@ -2,7 +2,6 @@ package core;
 public class Bank {
     Person atCounter;
     private int[] chipsDupe; //copy of Person array, used to modify person array
-    private String[] chipsColorsDupe;
     private int[] chipValues = {1, 2, 5,10,20,25, 50, 100};
     /*White chips – $1.
     Yellow chips – $2 (rarely used nowadays)
@@ -16,7 +15,6 @@ public class Bank {
     public Bank(Person p){
         atCounter = p;
         chipsDupe = atCounter.getChips();
-        chipsColorsDupe = atCounter.getChipColors();
     }
 
     public void moneyToChips(int x) throws InsufficientFunds{ //updates array of chips with the money inputted as chips

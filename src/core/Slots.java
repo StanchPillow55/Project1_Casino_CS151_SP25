@@ -2,20 +2,37 @@ package core;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class Slots extends Enforcer implements Game {
-    protected HashMap<String, Double> winningCombos; // hashmap of winning combos
+    protected HashMap<String, Double> winningCombos;
     private Person player; 
     private Random random;
     private char[] winningSymbols;
     private double[] probabilities;
+    private int initialBet;
+    private int comboResult;
 
-    public Slots() {
+    public Slots(int betAmount, int accountBalance) throws InstanceOverload{
+        initialBet = betAmount;
+        player.setMoney(accountBalance); //used for sanity check
+    }
+
+    public Slots(Person p, Scanner scanner) throws InsufficientFunds, InstanceOverload {
+        player = p;
+        System.out.print("Enter your initial bet (int): ");
+        if (scanner.hasNextInt()) {
+            initialBet = scanner.nextInt();
+        } else {
+            throw new IllegalArgumentException("Invalid bet value. Please enter an integer.");
+        }
+
         winningCombos = new HashMap<>();
         initializeWinningCombos();
         random = new Random();
         winningSymbols = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-        probabilities = new double[] {0.05, 0.1, 0.15, 0.2, 0.25, 0.1, 0.15}; // probabilities for each symbol
+        probabilities = new double[] {0.05, 0.1, 0.15, 0.2, 0.25, 0.1, 0.15};
+        validateProbabilities();
     }
 
     private void initializeWinningCombos() {
@@ -29,31 +46,30 @@ public class Slots extends Enforcer implements Game {
     }
 
     private char randomSymbol() {
-        double random = this.random.nextDouble(); // Generate a random number between 0.0 and 1.0
-        double totalProbabilities = 0.0; 
+        double randValue = random.nextDouble();
+        double totalProbabilities = 0.0;
         for (int i = 0; i < winningSymbols.length; i++) {
             totalProbabilities += probabilities[i];
-            if (random <= totalProbabilities) {
+            if (randValue <= totalProbabilities) {
                 return winningSymbols[i];
             }
         }
+        return winningSymbols[winningSymbols.length - 1];
     }
 
-    public void play(){
-        StringBuilder comboString = new StringBuilder();
+    @Override
+    public void play() {
         for (int i = 0; i < 3; i++) {
-            comboString.append(randomSymbol());
+            comboResult += randomSymbol();
         }
-        String result = comboString.toString();
-        System.out.println(result);
     }
 
-    public double bet(int number, int amount) {
-        String comboResult = play();
+    public int bet(int amount) {
+        play();
         System.out.println("Result: " + comboResult);
         if (winningCombos.containsKey(comboResult)) {
-            double payout = winningCombos.get(comboResult) * betAmount;
-            System.out.println("You win: " + payout);
+            int payout = (int)(winningCombos.get(comboResult) * amount);
+            System.out.println("You win: $" + payout);
             return payout;
         } else {
             System.out.println("You lose.");
@@ -61,13 +77,10 @@ public class Slots extends Enforcer implements Game {
         }
     }
 
-    //alternate betting to support using chips instead of dollars
-    public void playWithBetting() {
+    public void playWithBetting(Scanner scanner) {
         System.out.print("Enter your bet in dollars or chips: ");
-        Scanner scanner = new java.util.Scanner(System.in);
         int betAmount = scanner.nextInt();
-        scanner.close();
-        
+
         try {
             if (betAmount <= player.getMoney()) {
                 player.setMoney(player.getMoney() - betAmount);
@@ -77,10 +90,14 @@ public class Slots extends Enforcer implements Game {
                 throw new InsufficientFunds("Insufficient funds or chips.");
             }
 
-            playSlots slotsGame = new playSlots(betAmount, player.getMoney());
-            slotsGame.play();
+            int winnings = bet(betAmount);
+            player.setMoney(player.getMoney() + winnings);
+            System.out.println("Your new balance is: $" + player.getMoney());
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.nextLine(); // Clear invalid input
         }
     }
 
@@ -100,17 +117,26 @@ public class Slots extends Enforcer implements Game {
 
         for (int i = chips.length - 1; i >= 0 && remainingAmount > 0; i--) {
             int chipsNeeded = remainingAmount / chipValues[i];
-            if (chips[i] >= chipsNeeded) {
-                chips[i] -= chipsNeeded;
-                remainingAmount -= chipsNeeded * chipValues[i];
+            if (chips[i] > 0) {
+                int usedChips = Math.min(chipsNeeded, chips[i]);
+                chips[i] -= usedChips;
+                remainingAmount -= usedChips * chipValues[i];
             }
         }
         player.setChips(chips);
     }
 
+    private void validateProbabilities() {
+        double total = 0;
+        for (double p : probabilities) total += p;
+        if (Math.abs(total - 1.0) > 0.01) {
+            throw new IllegalArgumentException("Probabilities must add up to 1.0");
+        }
+    }
+
     @Override
-    public String toString(){
-        return result;  
+    public String toString() {
+        return "Slots Game - Winning Combos: " + winningCombos;
     }
 
     public HashMap<String, Double> getWinningCombos() {
@@ -135,6 +161,22 @@ public class Slots extends Enforcer implements Game {
 
     public void setProbabilities(double[] probabilities) {
         this.probabilities = probabilities;
+        validateProbabilities();
+    }
+
+    public int getInitialBet() {
+        return initialBet;
+    }
+
+    public void setInitialBet(int x) {
+        initialBet = x;
+    }
+
+    public void setPlayer(Person p) {
+        player = p;
+    }
+
+    public Person getPlayer() {
+        return player;
     }
 }
-

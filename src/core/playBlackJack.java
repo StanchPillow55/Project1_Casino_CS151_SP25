@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class playBlackJack extends BlackJack {
     // Handle the main Blackjack game logic
-    public playBlackJack() {
+    public playBlackJack() throws InstanceOverload{
         // Dealer and player initial cards
         ArrayList<String> dealerCards = new ArrayList<String>(Arrays.asList(dealCards()));
         ArrayList<String> playerCards = new ArrayList<String>(Arrays.asList(dealCards()));
@@ -44,7 +44,7 @@ public class playBlackJack extends BlackJack {
 
         if (dealerCt == playerCt) { // tie means return bet
             Person player = getPlayer();
-            int x = player.getInitialBet();
+            int x = this.getInitialBet();
             player.setMoney(player.getMoney() + x);
         } else if (dealerCt < playerCt) {
             while (dealerCt < playerCt && gameStatus.equals("C")) {
@@ -59,7 +59,7 @@ public class playBlackJack extends BlackJack {
 
         // handle money distribution
         Person player = getPlayer();
-        int x = player.getInitialBet();
+        int x = this.getInitialBet();
 
         switch (gameStatus) {
             case "W":
@@ -78,7 +78,7 @@ public class playBlackJack extends BlackJack {
                 System.out.println("Your current balance: " + player.getMoney());
                 break;
         }
-        
+
         System.out.println("Game over!");
     }
 
@@ -94,11 +94,16 @@ public class playBlackJack extends BlackJack {
                     }
                     break;
                 case "K":
-                case "Q":
-                case "J":
-                case "10":
                     sum += 10;
                     break;
+                case "Q":
+                    sum += 10;
+                    break;
+                case "J":
+                    sum += 10;
+                    break;
+                case "1": //Since a card cant start with 1, as it lowest goes to 2, then if it starts with 1 its actually 10
+                    sum += 10;
                 case "9":
                     sum += 9;
                     break;
