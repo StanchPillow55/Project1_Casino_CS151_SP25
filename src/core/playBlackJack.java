@@ -78,17 +78,7 @@ public class playBlackJack extends BlackJack {
                 System.out.println("Your current balance: " + player.getMoney());
                 break;
         }
-
-        // Check if the player busted
-        System.out.println("Your final hand: " + String.join(", ", playerCards));
-
-        // Dealer's turn (draw until 17 or higher)
-        System.out.println("Dealer's turn...");
-        ArrayList<String> dealerFinalCards = new ArrayList<String>(Arrays.asList(dealCards()));
-        System.out.println("Dealer's cards: " + dealerFinalCards.get(0) + " and " + dealerFinalCards.get(1));
-
-        // Example comparison to declare a winner (based on card count for simplicity)
-        // A more complex comparison based on actual card values can be done
+        
         System.out.println("Game over!");
     }
 

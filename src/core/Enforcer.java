@@ -37,4 +37,6 @@ public abstract class Enforcer {
         }
         return false;
     }
+
+    public abstract void
 }

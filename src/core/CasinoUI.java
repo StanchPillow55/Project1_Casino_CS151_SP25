@@ -72,20 +72,20 @@ public class CasinoUI {
     private void playBlackJack() throws InstanceOverload {
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = getValidBet();
-        BlackJack blackJack = new BlackJack(player);
+        BlackJack blackJack = new BlackJack(player, scanner);
         player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
-        blackJack.play(betAmount);
+        blackJack.play();
     }
 
     private void playPoker() throws InstanceOverload{
-        Poker poker = new Poker(player);
-        player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
-        poker.play(poker.getDeck(), poker.getDecks());
+        Poker poker = new Poker(player, scanner);
+        player.setInebriation(player.getInebriation() + 1); 
+        poker.play();
     }
 
     private void playRoulette() throws InstanceOverload{
         Roulette roulette = new Roulette(player);
-        player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
+        player.setInebriation(player.getInebriation() + 1); 
         roulette.play();
     }
 
@@ -93,13 +93,13 @@ public class CasinoUI {
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = getValidBet();
         Slots slots = new Slots(player);
-        player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
+        player.setInebriation(player.getInebriation() + 1); 
         slots.playWithBetting();
     }
 
     private void playSportsBetting() throws InstanceOverload{
         SportsBetting sportsBetting = new SportsBetting(player);
-        player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
+        player.setInebriation(player.getInebriation() + 1); 
         sportsBetting.play();
     }
 

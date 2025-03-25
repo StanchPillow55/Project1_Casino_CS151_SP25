@@ -9,8 +9,9 @@ public class BlackJack extends Enforcer implements Game {
     private final String[] Faces = {"J", "Q", "K", "A"};
     private int initialBet; 
 
-    public BlackJack(Person p) {
+    public BlackJack(Person p, Scanner scanner) {
         player = p;
+        initialBet = scanner.next("Enter your initial bet: ");
         initializeDeck();
     }
 
@@ -43,18 +44,18 @@ public class BlackJack extends Enforcer implements Game {
     }
 
     // Implement betting system
-    public void play(int x) {
+    public void play() {
         try {
-            if (betAmount <= player.getMoney()) {
-                player.setMoney(player.getMoney() - x);
-            } else if (x <= calculateChipValue(player.getChips())) {
-                deductChips(x);
+            if (initialBet <= player.getMoney()) {
+                player.setMoney(player.getMoney() - initialBet);
+            } else if (initialBet <= calculateChipValue(player.getChips())) {
+                deductChips(initialBet);
             } else {
                 throw new InsufficientFunds("Insufficient funds or chips.");
             }
 
             // Proceed with game logic
-            System.out.println("Starting BlackJack with bet: $" + x);
+            System.out.println("Starting BlackJack with bet: $" + initialBet);
             playBlackJack tmp = new playBlackJack();
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());
@@ -102,7 +103,7 @@ public class BlackJack extends Enforcer implements Game {
         }
         player.setChips(chips);
     }
-
+    
     // Getter and setter methods
     public String[] getDeck() {
         return Deck;

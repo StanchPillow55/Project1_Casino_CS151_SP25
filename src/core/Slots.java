@@ -48,7 +48,7 @@ public class Slots extends Enforcer implements Game {
         System.out.println(result);
     }
 
-    public double bet(double betAmount) {
+    public double bet(int number, int amount) {
         String comboResult = play();
         System.out.println("Result: " + comboResult);
         if (winningCombos.containsKey(comboResult)) {
@@ -61,7 +61,7 @@ public class Slots extends Enforcer implements Game {
         }
     }
 
-    //alternate betting to support using chips isntead of dollars
+    //alternate betting to support using chips instead of dollars
     public void playWithBetting() {
         System.out.print("Enter your bet in dollars or chips: ");
         Scanner scanner = new java.util.Scanner(System.in);
@@ -84,29 +84,29 @@ public class Slots extends Enforcer implements Game {
         }
     }
 
-private int calculateChipValue(int[] chips) {
-    int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
-    int totalValue = 0;
-    for (int i = 0; i < chips.length; i++) {
-        totalValue += chips[i] * chipValues[i];
-    }
-    return totalValue;
-}
-
-private void deductChips(int amount) {
-    int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
-    int[] chips = player.getChips();
-    int remainingAmount = amount;
-
-    for (int i = chips.length - 1; i >= 0 && remainingAmount > 0; i--) {
-        int chipsNeeded = remainingAmount / chipValues[i];
-        if (chips[i] >= chipsNeeded) {
-            chips[i] -= chipsNeeded;
-            remainingAmount -= chipsNeeded * chipValues[i];
+    private int calculateChipValue(int[] chips) {
+        int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+        int totalValue = 0;
+        for (int i = 0; i < chips.length; i++) {
+            totalValue += chips[i] * chipValues[i];
         }
+        return totalValue;
     }
-    player.setChips(chips);
-}
+
+    private void deductChips(int amount) {
+        int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+        int[] chips = player.getChips();
+        int remainingAmount = amount;
+
+        for (int i = chips.length - 1; i >= 0 && remainingAmount > 0; i--) {
+            int chipsNeeded = remainingAmount / chipValues[i];
+            if (chips[i] >= chipsNeeded) {
+                chips[i] -= chipsNeeded;
+                remainingAmount -= chipsNeeded * chipValues[i];
+            }
+        }
+        player.setChips(chips);
+    }
 
     @Override
     public String toString(){

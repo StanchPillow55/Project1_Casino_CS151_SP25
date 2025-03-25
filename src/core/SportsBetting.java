@@ -185,6 +185,7 @@ public class SportsBetting extends Enforcer implements Game{
       }
    }
 
+   @Override
    public void play() {
         System.out.print("Enter your bet in dollars or chips: ");
         int betAmount = new Scanner(System.in).nextInt();
