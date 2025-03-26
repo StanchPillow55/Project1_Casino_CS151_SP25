@@ -8,13 +8,11 @@ public class BlackJack extends Enforcer implements Game {
     private String[][] Decks = new String[6][52];
     private final String[] Faces = {"J", "Q", "K", "A"};
     private int initialBet;
-
-    public BlackJack() throws InstanceOverload{
-        System.out.println("Starting your game of BlackJack...");
-    }
+    private Scanner scnr;
 
     public BlackJack(Person p, Scanner scanner) throws InputMismatchException, InsufficientFunds, InstanceOverload {
         player = p;
+        scnr = scanner;
         System.out.print("Enter your initial bet (int): ");
         try {
             initialBet = scanner.nextInt();
@@ -64,12 +62,12 @@ public class BlackJack extends Enforcer implements Game {
             } else {
                 throw new InsufficientFunds("Insufficient funds or chips.");
             }
-
+    
             System.out.println("Starting BlackJack with bet: $" + initialBet);
-            playBlackJack tmp = new playBlackJack();
+            new playBlackJack(player, scnr); // Pass player and scanner
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());
-        } catch (InstanceOverload i){
+        } catch (InstanceOverload i) {
             System.out.println(i.getMessage());
         }
     }

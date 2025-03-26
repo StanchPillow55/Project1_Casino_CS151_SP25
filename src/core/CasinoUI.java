@@ -52,6 +52,7 @@ public class CasinoUI {
                         case 8 -> convertMoneyToChips();
                         case 9 -> {
                             System.out.println("Thanks for playing! Goodbye.");
+                            System.out.println("You earned: $" + player.getNetEarnings());
                             scanner.close();
                             return;
                         }

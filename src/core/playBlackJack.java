@@ -6,7 +6,8 @@ import java.util.Scanner;
 
 public class playBlackJack extends BlackJack {
     // Handle the main Blackjack game logic
-    public playBlackJack() throws InstanceOverload{
+    public playBlackJack(Person p, Scanner scanner) throws InstanceOverload, InsufficientFunds{
+        super(p, scanner);
         // Dealer and player initial cards
         ArrayList<String> dealerCards = new ArrayList<String>(Arrays.asList(dealCards()));
         ArrayList<String> playerCards = new ArrayList<String>(Arrays.asList(dealCards()));
@@ -21,7 +22,6 @@ public class playBlackJack extends BlackJack {
         String gameStatus = determineWinner(dealerCt, playerCt);
 
         // Player's turn (hit or stand)
-        Scanner scanner = new Scanner(System.in);
         while (gameStatus.equals("C")) {
             System.out.print("Do you want to (h)it or (s)tand? ");
             String choice = scanner.nextLine();

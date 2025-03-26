@@ -44,6 +44,6 @@ public class Bank {
         }
 
         atCounter.setChips(chipsDupe);
-        atCounter.setMoney(sum);
+        atCounter.setNetEarnings(atCounter.getNetEarnings() + sum);
     }
 }
