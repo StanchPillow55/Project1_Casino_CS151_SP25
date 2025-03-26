@@ -57,10 +57,7 @@ public class Poker extends Enforcer implements Game {
 
     // Start the game by creating a playPoker object
     public void play() {
-        System.out.print("Enter your bet in dollars or chips: ");
-        Scanner scanner = new java.util.Scanner(System.in);
-        int betAmount = scanner.nextInt();
-        scanner.close();
+        int betAmount = initialBet;
 
         try {
             if (betAmount <= player.getMoney()) {
@@ -73,7 +70,7 @@ public class Poker extends Enforcer implements Game {
 
             pot += betAmount;
             System.out.println("Starting Poker with pot: $" + pot);
-            playPoker pokerGame = new playPoker();
+            playPoker pokerGame = new playPoker(player, scnr);
             pokerGame.playHand();
         } catch (InsufficientFunds e) {
             System.out.println(e.getMessage());

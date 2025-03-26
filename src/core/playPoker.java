@@ -4,16 +4,19 @@ package core;
 import java.util.*;
 
 public class playPoker extends Poker {
+    private Person player;
     private String[] deck;
     private String[][] decks;
     private ArrayList<String> playerHand;
     private ArrayList<String> dealerHand;
     private Random rand = new Random();
     private int currentBet; // Track the current bet
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
 
     // Constructor for playPoker
-    public playPoker() throws InstanceOverload{
+    public playPoker(Person p, Scanner scnr) throws InstanceOverload, InsufficientFunds{
+        super(p, scnr); // Pass scanner to the superclass
+        scanner = scnr;
         deck = super.getDeck();
         decks = super.getDecks();
         playerHand = new ArrayList<String>();
@@ -44,7 +47,7 @@ public class playPoker extends Poker {
         // Ask player if they want to raise the bet
         System.out.println("Do you want to raise your bet? Your current bet is " + currentBet);
         System.out.print("Enter the amount to raise (or 0 to keep the bet): ");
-        int raiseAmount = scanner.nextInt();
+        int raiseAmount = super.getScnr().nextInt();
         if (raiseAmount > 0) {
             currentBet += raiseAmount;
             System.out.println("Your new bet is " + currentBet);
