@@ -10,18 +10,12 @@ public class SportsBetting extends Enforcer implements Game {
     private String selectedTeam;
     private final Map<String, List<String>> teamsMap;
     private List<Matchup> currentMatchups;
-    private int initialBet;
+    private Scanner sc;
 
-    public SportsBetting(Person p, Scanner scanner) throws InputMismatchException, InsufficientFunds, InstanceOverload{
+    public SportsBetting(Person p, Scanner scanner) throws InstanceOverload{
         this.player = p;
+        this.sc = scanner;
         this.teamsMap = initializeTeams();
-        try {
-            System.out.print("Enter your initial bet (int): ");
-            initialBet = scanner.nextInt();
-            if (initialBet <= 0) throw new InsufficientFunds("Enter a valid bet!");
-        } catch (InputMismatchException e) {
-            throw new InputMismatchException("Enter a valid integer!");
-        }
     }
 
     private Map<String, List<String>> initializeTeams() {
@@ -56,9 +50,9 @@ public class SportsBetting extends Enforcer implements Game {
         return matchups;
     }
 
-    public void chooseSport(Scanner sc) {
+    public void chooseSport() {
         System.out.print("Enter a sport to bet on (mlb, tennis, nba, nfl) or type 'menu' to return: ");
-        String input = sc.nextLine().toLowerCase();
+        String input = sc.next().toLowerCase();
         if (!teamsMap.containsKey(input)) {
             System.out.println("Sport not recognized. Exiting betting for this round.");
             currentMatchup = null;
@@ -66,6 +60,26 @@ public class SportsBetting extends Enforcer implements Game {
         }
         currentMatchups = generateMatchups(input, teamsMap.get(input));
         displayMatchups();
+        System.out.print("Select a matchup by number or type 'menu' to return: ");
+        String choice = sc.next();
+        if (choice.equalsIgnoreCase("menu")) {
+            currentMatchup = null;
+            return;
+        }
+
+        try {
+            int matchupIndex = Integer.parseInt(choice) - 1;
+            if (matchupIndex < 0 || matchupIndex >= currentMatchups.size()) {
+                System.out.println("Invalid selection. Returning to main menu.");
+                currentMatchup = null;
+            } else {
+                currentMatchup = currentMatchups.get(matchupIndex);
+                System.out.println("You selected: " + currentMatchup.getTeam1() + " vs " + currentMatchup.getTeam2());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Returning to main menu.");
+            currentMatchup = null;
+        }
     }
 
     private void displayMatchups() {
@@ -76,23 +90,23 @@ public class SportsBetting extends Enforcer implements Game {
         }
     }
 
-    public void chooseTeam(Scanner sc) {
-        if (currentMatchup == null) return;
+    public void chooseTeam() {
+        if (currentMatchup == null) {return;}
         System.out.println("1. " + currentMatchup.getTeam1() + " (odds: " + currentMatchup.getOddsTeam1() + ")");
         System.out.println("2. " + currentMatchup.getTeam2() + " (odds: " + currentMatchup.getOddsTeam2() + ")");
         System.out.print("Enter 1 or 2: ");
 
-        String choice = sc.nextLine();
+        String choice = sc.next();
         selectedTeam = ("1".equals(choice)) ? currentMatchup.getTeam1() : currentMatchup.getTeam2();
         System.out.println("You have chosen to bet on " + selectedTeam);
     }
 
-    public void bet(Scanner sc) throws InsufficientFunds {
-        if (currentMatchup == null || selectedTeam == null) return;
+    public void bet() throws InsufficientFunds {
+        if (currentMatchup == null || selectedTeam == null) {return;}
         System.out.print("How many chips would you like to bet? (or type 'menu' to return): ");
 
         try {
-            betAmount = Integer.parseInt(sc.nextLine());
+            betAmount = sc.nextInt();   
             if (betAmount <= 0 || calculateChipValue(player.getChips()) < betAmount) {
                 throw new InsufficientFunds("Insufficient chips for that bet.");
             }
@@ -139,12 +153,12 @@ public class SportsBetting extends Enforcer implements Game {
 
     @Override
     public void play() {
-        Scanner sc = new Scanner(System.in);
-        chooseSport(sc);
+        chooseSport();
+        chooseTeam();
         if (currentMatchup != null) {
-            chooseTeam(sc);
+            chooseTeam();
             try {
-                bet(sc);
+                bet();
                 resolveBet();
             } catch (InsufficientFunds e) {
                 System.out.println(e.getMessage());

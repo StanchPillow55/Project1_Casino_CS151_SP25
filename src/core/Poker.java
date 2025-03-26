@@ -40,7 +40,7 @@ public class Poker extends Enforcer implements Game {
         }
 
         int faceCt = 0;
-        for (int i = 37; i < 52; i++) { //fills remaining with face cards
+        for (int i = 36; i < 52; i++) { //fills remaining with face cards
             Deck[i] = "" + Faces[faceCt] + "D";
             Deck[i + 1] = "" + Faces[faceCt] + "C";
             Deck[i + 2] = "" + Faces[faceCt] + "H";

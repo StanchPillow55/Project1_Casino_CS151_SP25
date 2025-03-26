@@ -70,8 +70,6 @@ public class CasinoUI {
     }
 
     private void playBlackJack() throws InstanceOverload, InsufficientFunds, InputMismatchException {
-        System.out.print("Enter your bet in dollars or chips: ");
-        int betAmount = getValidBet();
         BlackJack blackJack = new BlackJack(player, scanner);
         player.setInebriation(player.getInebriation() + 1); // Drinking effect for playing games
         blackJack.play();
@@ -90,8 +88,6 @@ public class CasinoUI {
     }
 
     private void playSlots() throws InstanceOverload, InsufficientFunds, InputMismatchException{
-        System.out.print("Enter your bet in dollars or chips: ");
-        int betAmount = getValidBet();
         Slots slots = new Slots(player, scanner);
         player.setInebriation(player.getInebriation() + 1); 
         slots.playWithBetting(scanner);
@@ -154,6 +150,15 @@ public class CasinoUI {
         System.out.print("Enter your name: ");
         String name = scanner.next(); 
         Person player = new Person(name);
+        System.out.println("Note: Chips are as follows:\n"
+        + "White chips – $1.\n"
+        + "Yellow chips – $2 (rarely used nowadays)\n"
+        + "Red chips – $5.\n"
+        + "Blue chips – $10.\n"
+        + "Gray chips – $20.\n"
+        + "Green chips – $25.\n"
+        + "Orange chips – $50.\n"
+        + "Black chips – $100.\n");
         CasinoUI casinoUI = new CasinoUI(player, scanner);
         try{
             casinoUI.start();

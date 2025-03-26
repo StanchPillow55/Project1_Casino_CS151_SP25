@@ -1,4 +1,4 @@
-// // Source code is decompiled from a .class file using FernFlower decompiler.
+// // Old testing class for Sportsbetting.java
 // package core;
 
 // import java.util.Scanner;
