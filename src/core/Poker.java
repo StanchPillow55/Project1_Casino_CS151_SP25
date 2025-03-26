@@ -11,13 +11,10 @@ public class Poker extends Enforcer implements Game {
     private int initialBet;
     private Scanner scnr;
 
-    public Poker() throws InstanceOverload{
-        initializeDeck();
-    }
-
     public Poker(Person p, Scanner scanner) throws InputMismatchException, InsufficientFunds, InstanceOverload{
-        player = p;
-        scnr = scanner;
+        this.player = p;
+        this.scnr = scanner;
+        this.pot = 0;
         try{
             System.out.print("Enter your initial bet (int): ");
             initialBet = scanner.nextInt();
@@ -68,7 +65,7 @@ public class Poker extends Enforcer implements Game {
                 throw new InsufficientFunds("Insufficient funds or chips.");
             }
 
-            pot += betAmount;
+            pot += betAmount*2; //2x as the dealer or house also has to contribute
             System.out.println("Starting Poker with pot: $" + pot);
             playPoker pokerGame = new playPoker(player, scnr);
             pokerGame.playHand();

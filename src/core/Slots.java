@@ -4,12 +4,12 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
-public class Slots extends Enforcer implements Game {
+public class Slots extends Enforcer implements Game { 
     protected HashMap<String, Double> winningCombos;
     private Person player; 
     private Random random;
     private char[] winningSymbols;
-    private double[] probabilities;
+    private double[] probabilities; 
     private int initialBet;
     private int comboResult;
 
@@ -35,7 +35,7 @@ public class Slots extends Enforcer implements Game {
         validateProbabilities();
     }
 
-    private void initializeWinningCombos() {
+    private void initializeWinningCombos() { 
         winningCombos.put("AAA", 1000.0);
         winningCombos.put("BBB", 500.0);
         winningCombos.put("CCC", 250.0);
@@ -60,12 +60,12 @@ public class Slots extends Enforcer implements Game {
     @Override
     public void play() {
         for (int i = 0; i < 3; i++) {
-            comboResult += randomSymbol();
+            comboResult += randomSymbol(); 
         }
     }
 
     public int bet(int amount) {
-        play();
+        play(); 
         System.out.println("Result: " + comboResult);
         if (winningCombos.containsKey(comboResult)) {
             int payout = (int)(winningCombos.get(comboResult) * amount);

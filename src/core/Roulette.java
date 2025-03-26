@@ -7,7 +7,7 @@ import java.util.InputMismatchException;
 public class Roulette extends Enforcer implements Game {
     private Person player;
     private int pot;
-    private int[] numbers;
+    private int[] numbers; 
     private boolean colors;
     private int initialBet;
     private Scanner scnr;
@@ -43,7 +43,7 @@ public class Roulette extends Enforcer implements Game {
                 throw new InsufficientFunds("Insufficient funds or chips.");
             }
 
-            pot += initialBet;
+            pot += initialBet; 
             System.out.println("Starting Roulette with pot: $" + pot);
 
             playRoulette rouletteGame = new playRoulette(initialBet, player);

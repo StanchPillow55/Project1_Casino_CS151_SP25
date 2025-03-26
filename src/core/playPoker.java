@@ -14,8 +14,9 @@ public class playPoker extends Poker {
     private Scanner scanner;
 
     // Constructor for playPoker
-    public playPoker(Person p, Scanner scnr) throws InstanceOverload, InsufficientFunds{
+    public playPoker(Person p, Scanner scnr) throws InstanceOverload, InsufficientFunds {
         super(p, scnr); // Pass scanner to the superclass
+        this.player = p; // Explicitly assign the player reference in case it's missing
         scanner = scnr;
         deck = super.getDeck();
         decks = super.getDecks();
@@ -23,68 +24,56 @@ public class playPoker extends Poker {
         dealerHand = new ArrayList<String>();
         currentBet = 0; 
     }
+    
 
     // Play a single hand of poker
-    public void playHand() throws InstanceOverload, InsufficientFunds{
-        // Ask the player for an initial bet
+    public void playHand() throws InstanceOverload, InsufficientFunds {
         System.out.println("Welcome to Poker! How much would you like to bet?");
-        currentBet = getValidBet(); // Get a valid bet from the player
-
-        // Deal 5 cards each to player and dealer
+        currentBet = getValidBet();
+    
         dealCards(playerHand);
         dealCards(dealerHand);
-
-        // Show player's hand and dealer's first card
+    
         System.out.println("Your cards: " + playerHand);
         System.out.println("Dealer's cards: " + dealerHand.get(0) + " and a hidden card.");
-
-        // Evaluate hands and determine winner
+    
         String playerHandRank = evaluateHand(playerHand);
         String dealerHandRank = evaluateHand(dealerHand);
-
+    
         System.out.println("Your hand rank: " + playerHandRank);
-
-        // Ask player if they want to raise the bet
+    
         System.out.println("Do you want to raise your bet? Your current bet is " + currentBet);
         System.out.print("Enter the amount to raise (or 0 to keep the bet): ");
-        int raiseAmount = super.getScnr().nextInt();
+        int raiseAmount = getValidBet();
+        
         if (raiseAmount > 0) {
             currentBet += raiseAmount;
             System.out.println("Your new bet is " + currentBet);
         } else {
             System.out.println("You chose not to raise your bet.");
         }
-
+    
         System.out.println("Dealer's hand rank: " + dealerHandRank);
         String result = compareHands(playerHandRank, dealerHandRank);
         System.out.println("Result: " + result);
-
-        try{
-            Poker pokerGame = new Poker(super.getPlayer(), super.getScnr());
-            int pot = pokerGame.getPot(); // Get the pot
-
-            if (result.equals("Player wins")) {
-            System.out.println("You win! The pot had: $" + pot);
-            pokerGame.getPlayer().setMoney(pokerGame.getPlayer().getMoney() + pot);
-            } else if (result.equals("Dealer wins")) {
+    
+        int pot = getPot(); 
+        setPot(pot + currentBet * 2);
+    
+        if (result.equals("Player wins")) {
+            System.out.println("You win! The pot had: $" + getPot());
+            player.setMoney(player.getMoney() + getPot());
+        } else if (result.equals("Dealer wins")) {
             System.out.println("Dealer wins. All money lost.");
-            } else {
-            System.out.println("It's a tie! No money lost.");
-            pokerGame.getPlayer().setMoney(pokerGame.getPlayer().getMoney() + pot / 2);
-            }
-
-            pokerGame.setPot(0);
+        } else {
+            System.out.println("It's a tie! You get your bet back.");
+            player.setMoney(player.getMoney() + currentBet); // Refund the original bet on a tie
         }
-        catch(InsufficientFunds i){
-            throw new InsufficientFunds("Invalid Bet.");
-        }
-        catch(InstanceOverload o){
-            throw new InstanceOverload("Too many objects!!");
-        }
-        finally{
-            System.out.println("Game over!");
-        }
+    
+        setPot(0); // Reset the pot for the next round
+        System.out.println("Game over!");
     }
+    
 
     private void dealCards(ArrayList<String> hand) {
         for (int i = 0; i < 5; i++) {

@@ -27,10 +27,10 @@ public class SportsBetting extends Enforcer implements Game {
         return teams;
     }
 
-    private double[] generateOdds() {
+    private double[] generateOdds() { 
         Random rand = new Random();
         double margin = 1.05;
-        double p = 0.3 + 0.4 * rand.nextDouble();
+        double p = 0.3 + 0.4 * rand.nextDouble(); 
         return new double[]{roundOdds(1.0 / (p * margin)), roundOdds(1.0 / ((1.0 - p) * margin))};
     }
 
@@ -82,7 +82,7 @@ public class SportsBetting extends Enforcer implements Game {
         }
     }
 
-    private void displayMatchups() {
+    private void displayMatchups() { //forgot to convert money to chips
         System.out.println("Available matchups:");
         for (int i = 0; i < currentMatchups.size(); i++) {
             Matchup m = currentMatchups.get(i);
@@ -137,7 +137,7 @@ public class SportsBetting extends Enforcer implements Game {
   }
 
   private void deductChips(int amount) {
-   int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100};
+   int[] chipValues = {1, 2, 5, 10, 20, 25, 50, 100}; 
    int[] chips = player.getChips();
    int remainingAmount = amount;
 

@@ -65,7 +65,7 @@ public class playRoulette {
         // Calculate winnings
         int winnings = 0;
         if (bets.containsKey(winningNumber)) {
-            winnings = bets.get(winningNumber) * 2;
+            winnings = bets.get(winningNumber) * 36;
             System.out.println("Congratulations! You won $" + winnings);
         } else {
             System.out.println("Sorry! You lost all your bets.");

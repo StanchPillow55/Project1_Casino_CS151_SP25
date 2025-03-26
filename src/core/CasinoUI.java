@@ -40,7 +40,7 @@ public class CasinoUI {
                 }
 
                 try {
-                    int choice = Integer.parseInt(input);
+                    int choice = Integer.parseInt(input);  
                     switch (choice) {
                         case 1 -> playBlackJack();
                         case 2 -> playPoker();
@@ -150,6 +150,11 @@ public class CasinoUI {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter your name: ");
         String name = scanner.next(); 
+        if (name.toUpperCase().equals("EXIT")) {
+            System.out.println("Exiting the casino... Goodbye.");
+            scanner.close();
+            System.exit(0);
+        }
         Person player = new Person(name);
         System.out.println("Note: Chips are as follows:\n"
         + "White chips – $1.\n"

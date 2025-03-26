@@ -11,7 +11,7 @@ public class playSlots extends Slots {
 
     @Override
     public void play() {
-        double payout = bet(betAmount);
+        double payout = bet(betAmount); 
         accountBalance += payout - betAmount;
         System.out.println("Your Account Balance is: " + accountBalance);
     }
