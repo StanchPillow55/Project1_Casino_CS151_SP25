@@ -154,7 +154,6 @@ public class SportsBetting extends Enforcer implements Game {
     @Override
     public void play() {
         chooseSport();
-        chooseTeam();
         if (currentMatchup != null) {
             chooseTeam();
             try {
